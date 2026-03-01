@@ -1,0 +1,34 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy solution file
+COPY ["FloraManagement.slnx", "./"]
+
+# Copy project files
+COPY ["src/FloraManagement.Worker/FloraManagement.Worker.csproj", "src/FloraManagement.Worker/"]
+COPY ["src/FloraManagement.Contracts/FloraManagement.Contracts.csproj", "src/FloraManagement.Contracts/"]
+COPY ["src/FloraManagement.Domain/FloraManagement.Domain.csproj", "src/FloraManagement.Domain/"]
+COPY ["src/FloraManagement.Persistence/FloraManagement.Persistence.csproj", "src/FloraManagement.Persistence/"]
+COPY ["src/FloraManagement.MessageBroker/FloraManagement.MessageBroker.csproj", "src/FloraManagement.MessageBroker/"]
+
+# Restore dependencies
+RUN dotnet restore "src/FloraManagement.Worker/FloraManagement.Worker.csproj"
+
+# Copy everything else
+COPY . .
+
+# Build
+WORKDIR "/src/src/FloraManagement.Worker"
+RUN dotnet build "FloraManagement.Worker.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "FloraManagement.Worker.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+ENTRYPOINT ["dotnet", "FloraManagement.Worker.dll"]

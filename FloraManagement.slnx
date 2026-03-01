@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FloraManagement.API/FloraManagement.API.csproj" />
+    <Project Path="src/FloraManagement.Contracts/FloraManagement.Contracts.csproj" />
+    <Project Path="src/FloraManagement.Domain/FloraManagement.Domain.csproj" />
+    <Project Path="src/FloraManagement.MessageBroker/FloraManagement.MessageBroker.csproj" />
+    <Project Path="src/FloraManagement.Persistence/FloraManagement.Persistence.csproj" />
+    <Project Path="src/FloraManagement.Worker/FloraManagement.Worker.csproj" />
+  </Folder>
+</Solution>
